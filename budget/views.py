@@ -1,11 +1,13 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .models import (CategoryModel, ExpenseModel, GoalModel, IncomeModel,
-                     UserModel)
+from .models import CategoryModel, ExpenseModel, GoalModel, IncomeModel, Wallet
 from .serializers import (CategorySerializer, ExpenseSerializer,
-                          GoalSerializer, IncomeSerializer, UserSerializer)
+                          GoalSerializer, IncomeSerializer, UserSerializer, WalletSerializer)
+
+User = get_user_model()
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -30,14 +32,16 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
 class IncomeViewSet(viewsets.ModelViewSet):
     def create(self, request):
-        amount = request.data.get('amount_of_outcome')
-        user = request.user
-        user.wallet_balance += amount
-        user.save()
-        ExpenseModel.objects.create(
-            amount_of_outcome=amount,
+        amount = request.data.get('amount_of_income')
+        wallet = Wallet.objects.get(id=request.data.get('wallet'))
+        print(wallet.amont)
+        wallet.amont += amount
+        wallet.save()
+        IncomeModel.objects.create(
+            amount_of_income=amount,
             description=request.data.get('description'),
-            author=user)
+            author=request.user,
+            wallet=Wallet.objects.get(id=request.data.get('wallet')))
         return Response({'message': 'Income created successfully'})
     queryset = IncomeModel.objects.all()
     serializer_class = IncomeSerializer
@@ -49,5 +53,10 @@ class GoalViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = UserModel.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class WalletViewSet(viewsets.ModelViewSet):
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer

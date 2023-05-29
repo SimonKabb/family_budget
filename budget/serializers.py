@@ -1,7 +1,10 @@
 
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import CategoryModel, ExpenseModel, GoalModel, IncomeModel, UserModel
+from .models import CategoryModel, ExpenseModel, GoalModel, IncomeModel, Wallet
+
+User = get_user_model()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -30,5 +33,11 @@ class GoalSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserModel
+        model = User
+        fields = '__all__'
+
+
+class WalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
         fields = '__all__'

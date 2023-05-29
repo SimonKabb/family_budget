@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import UserModel, ExpenseModel
 
-admin.site.register(UserModel)
+from .models import ExpenseModel, Wallet, IncomeModel
+
 admin.site.register(ExpenseModel)
-# Register your models here.
+admin.site.register(Wallet)
+admin.site.register(IncomeModel)
