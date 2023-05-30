@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'budget.apps.BudgetConfig',
+    'front.apps.FrontConfig',
 ]
 
 MIDDLEWARE = [

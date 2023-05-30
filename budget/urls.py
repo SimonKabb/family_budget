@@ -13,5 +13,5 @@ router.register('income', IncomeViewSet)
 router.register('wallet', WalletViewSet)
 
 urlpatterns = [
-    path('api_v1/', include(router.urls)),
+    path('', include(router.urls)),
 ]
