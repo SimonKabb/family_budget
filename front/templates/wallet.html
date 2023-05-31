@@ -1,7 +1,7 @@
 <!-- Wallet.html -->
 {% extends 'Base.html' %} {% block title %}Кошелек{% endblock %} 
 {% block content %}
-<h1>{{ wallet.name }}</h1>
+<h1>{{ wallet.name}}</h1>
 <div class="row">
   <div class="col">
     <h2>Сумма в кошельке: {{ wallet.amont }} {{ wallet.currency }}</h2>
@@ -13,6 +13,7 @@
   </div>
   <div class="col">
     <button class="btn btn-danger">Потратить</button>
+    <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger">Удалить кошелек</a>
   </div>
 </div>
 {% endblock %}

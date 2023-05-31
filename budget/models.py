@@ -23,9 +23,9 @@ CURRENCY_LIST = [
 
 
 class Wallet(models.Model):
-    name = models.TextField(max_length=128)
+    name = models.TextField(max_length=64)
     currency = models.TextField(max_length=3, choices=CURRENCY_LIST)
-    amont = models.FloatField()
+    amont = models.FloatField(default=0)
     owner = models.ManyToManyField(User)
 
 
