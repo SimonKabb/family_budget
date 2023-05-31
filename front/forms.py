@@ -1,6 +1,6 @@
 from django import forms
 
-from budget.models import Wallet
+from budget.models import Wallet, IncomeModel, ExpenseModel
 
 
 class WalletForm(forms.ModelForm):
@@ -23,3 +23,15 @@ class WalletForm(forms.ModelForm):
     def clean_subject(self):
         data = self.cleaned_data['subject']
         return data
+
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = IncomeModel
+        fields = ('amount_of_income', 'description', 'cathegory')
+
+
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = ExpenseModel
+        fields = ('amount_of_outcome', 'description', 'cathegory',)

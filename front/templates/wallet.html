@@ -9,10 +9,10 @@
 </div>
 <div class="row">
   <div class="col">
-    <button class="btn btn-primary">Пополнить счет</button>
+    <a href="{% url 'new_income' wallet.pk %}" class="btn btn-primary">Пополнить счет</a>
+    <a href="{% url 'new_expense' wallet.pk %}" class="btn btn-danger">Потратить</a>
   </div>
   <div class="col">
-    <button class="btn btn-danger">Потратить</button>
     <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger">Удалить кошелек</a>
   </div>
 </div>
