@@ -1,8 +1,48 @@
-{% extends 'Base.html' %} {% block title %}Новый расход{% endblock %} 
+{% extends 'Base.html' %}
+{% block title %}Новый расход{% endblock %}
 {% block content %}
-<form method="post" action="{% url 'new_expense' wallet_pk=wallet.id %}" class="my-4">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Отправить</button>
-</form>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <form method="post" action="{% url 'new_expense' wallet_pk=wallet.id %}" class="my-4">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label for="{{ form.amount_of_outcome.id_for_label }}">Сумма расхода</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            {{ form.amount_of_outcome }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-text">Описание</span>
+            {{ form.description }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ form.cathegory.id_for_label }}">Категория</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-folder"></i></span>
+            </div>
+            <select class="custom-select" id="{{ form.cathegory.id_for_label }}" name="{{ form.cathegory.html_name }}">
+              <option selected disabled>Выберите категорию</option>
+              {% for category in categories %}
+              <option value="{{ category.id }}">{{ category }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        
+        
+        <button type="submit" class="btn btn-primary btn-block">Отправить</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

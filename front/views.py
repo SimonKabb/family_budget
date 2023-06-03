@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model, logout, login, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
-from budget.models import Wallet
+from budget.models import Wallet, CategoryModel, IncomeModel, ExpenseModel
 
 from .forms import ExpenseForm, IncomeForm, WalletForm
 
@@ -63,7 +63,11 @@ def login_view(request):
 
 def wallet_view(request, pk):
     wallet = Wallet.objects.get(id=pk)
-    context = {'wallet': wallet}
+    incomes = IncomeModel.objects.filter(wallet=wallet).order_by('-date')[:5]
+    expenses = ExpenseModel.objects.filter(wallet=wallet).order_by('-date')[:5]
+    context = {'wallet': wallet,
+               'incomes': incomes,
+               'expenses': expenses}
     return render(request, 'wallet.html', context)
 
 
@@ -102,6 +106,7 @@ def delete_wallet(request, wallet_pk):
 # Income
 def new_income(request, wallet_pk):
     wallet = Wallet.objects.get(id=wallet_pk)
+    categories = CategoryModel.objects.all()
     if request.method == 'POST':
         form = IncomeForm(request.POST)
         if form.is_valid():
@@ -114,13 +119,16 @@ def new_income(request, wallet_pk):
             return redirect('wallet', pk=wallet.pk)
     else:
         form = IncomeForm(initial={'wallet': wallet})
-    return render(request, 'new_income.html', {'form': form, 'wallet': wallet})
+    return render(request, 'new_income.html', {'form': form,
+                                               'wallet': wallet,
+                                               'categories': categories})
 
 # Expense
 
 
 def new_expense(request, wallet_pk):
     wallet = Wallet.objects.get(id=wallet_pk)
+    categories = CategoryModel.objects.all()
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
         if form.is_valid():
@@ -133,4 +141,6 @@ def new_expense(request, wallet_pk):
             return redirect('wallet', pk=wallet_pk)
     else:
         form = ExpenseForm(initial={'wallet': wallet})
-    return render(request, 'new_expense.html', {'form': form, 'wallet': wallet})
+    return render(request, 'new_expense.html', {'form': form,
+                                                'wallet': wallet,
+                                                'categories': categories})

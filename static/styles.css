@@ -16,3 +16,11 @@ body {
 footer {
   flex-shrink: 0;
 }
+
+.income-item {
+  color: green;
+}
+
+.expense-item {
+  color: red;
+}

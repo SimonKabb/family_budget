@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+import datetime
 User = get_user_model()
 CURRENCY_LIST = [
     ('RUB', 'Russian Ruble'),
@@ -28,10 +28,24 @@ class Wallet(models.Model):
     amont = models.FloatField(default=0)
     owner = models.ManyToManyField(User)
 
+    class Meta:
+        verbose_name = 'Кошелек'
+        verbose_name_plural = 'Кошельки'
+
+    def __str__(self):
+        return self.name
+
 
 class CategoryModel(models.Model):
     category_name = models.TextField()
     description = models.TextField()
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.category_name
 
 
 class ExpenseModel(models.Model):
@@ -43,6 +57,12 @@ class ExpenseModel(models.Model):
     cathegory = models.ForeignKey(
         CategoryModel, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        outcome = '-' + str(self.amount_of_outcome) + '. Дата: ' + \
+            str(self.date.date().isoformat()) + '. Время: ' + \
+            str(self.date.time().strftime("%H:%M:%S"))
+        return outcome
+
 
 class IncomeModel(models.Model):
     amount_of_income = models.PositiveIntegerField()
@@ -52,6 +72,12 @@ class IncomeModel(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     cathegory = models.ForeignKey(
         CategoryModel, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        outcome = str(self.amount_of_income) + '. Дата: ' + \
+            str(self.date.date().isoformat()) + '. Время: ' + \
+            str(self.date.time().strftime("%H:%M:%S"))
+        return outcome
 
 
 class GoalModel(models.Model):
