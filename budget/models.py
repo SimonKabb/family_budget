@@ -26,7 +26,7 @@ class Wallet(models.Model):
     name = models.TextField(max_length=64)
     currency = models.TextField(max_length=3, choices=CURRENCY_LIST)
     amont = models.FloatField(default=0)
-    owner = models.ManyToManyField(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Кошелек'

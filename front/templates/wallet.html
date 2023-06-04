@@ -1,34 +1,28 @@
 <!-- Wallet.html -->
 {% extends 'Base.html' %} {% block title %}Кошелек{% endblock %} 
-{% load static %}
-<link rel="stylesheet" href="{% static 'styles.css' %}">
 {% block content %}
 <h1>{{ wallet.name}}</h1>
 <div class="row">
   <div class="col">
-    <h2>Сумма в кошельке: {{ wallet.amont }} {{ wallet.currency }}</h2>
+    <h4>Сумма в кошельке:</h4> <h3>{{ wallet.amont }} {{ wallet.currency }}</h3>
   </div>
 </div>
+<hr>
 <h2>Последние операции</h2>
-
-<h3>Доходы</h3>
 <ul>
-    {% for income in incomes %}
-    <li class="text-success">{{ income.date }} - {{ income.amount_of_income }} {{ wallet.currency }}</li>
-    {% endfor %}
-</ul>
-
-<h3>Расходы</h3>
-<ul>
-    {% for expense in expenses %}
-    <li class="text-danger">{{ expense.date }} - {{ expense.amount_of_outcome }} {{ wallet.currency }}</li>
-    {% endfor %}
+  {% for operation in operations %}
+    {% if operation.amount_of_income %}
+      <li><span class="text-success">{{ operation.date }} + {{operation.amount_of_income}} </li>
+    {% else %}
+    <li><span class="text-danger">{{ operation.date }} - {{operation.amount_of_outcome}} </span></li>
+    {% endif %}
+  {% endfor %}
 </ul>
 <div class="row">
   <div class="col">
-    <a href="{% url 'new_income' wallet.pk %}" class="btn btn-primary">Пополнить счет</a>
-    <a href="{% url 'new_expense' wallet.pk %}" class="btn btn-danger">Потратить</a>
-    <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger">Удалить кошелек</a>
+    <a href="{% url 'new_income' wallet.pk %}" class="btn btn-primary btn-sm">Пополнить счет</a>
+    <a href="{% url 'new_expense' wallet.pk %}" class="btn btn-danger btn-sm">Потратить</a>
+    <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger btn-sm">Удалить кошелек</a>
   </div>
 </div>
 {% endblock %}

@@ -1,7 +1,11 @@
 <!-- Wallet.html -->
 {% extends 'Base.html' %} {% block title %}Кошельки{% endblock %} 
 {% block content %}
+{% if wallets %}
   {% for wallet in wallets %}
       <a href="/wallet/{{ wallet.pk }}/"><h2>{{ wallet.name }}: {{ wallet.amont }} {{ wallet.currency }}</h2></a>
   {% endfor %}
+  {% else %}
+    <h2>Cоздай кошелек</h2>
+{% endif %}
 {% endblock %}

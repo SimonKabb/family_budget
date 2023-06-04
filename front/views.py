@@ -1,8 +1,12 @@
-from django.contrib.auth import get_user_model, logout, login, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from itertools import chain
+
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
-from budget.models import Wallet, CategoryModel, IncomeModel, ExpenseModel
+from budget.models import CategoryModel, ExpenseModel, IncomeModel, Wallet
 
 from .forms import ExpenseForm, IncomeForm, WalletForm
 
@@ -61,13 +65,18 @@ def login_view(request):
 # Кошелек
 
 
+@login_required
 def wallet_view(request, pk):
     wallet = Wallet.objects.get(id=pk)
+    print(wallet.owner)
+    if request.user != wallet.owner:
+        return HttpResponseForbidden("У вас нет доступа к этому кошельку.")
     incomes = IncomeModel.objects.filter(wallet=wallet).order_by('-date')[:5]
     expenses = ExpenseModel.objects.filter(wallet=wallet).order_by('-date')[:5]
+    operations = sorted(
+        chain(incomes, expenses), key=lambda x: x.date, reverse=True)[:10]
     context = {'wallet': wallet,
-               'incomes': incomes,
-               'expenses': expenses}
+               'operations': operations}
     return render(request, 'wallet.html', context)
 
 
@@ -75,27 +84,26 @@ def new_wallet(request):
     if request.method == 'POST':
         form = WalletForm(request.POST, user=request.user)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            currency = form.cleaned_data['currency']
-            amont = form.cleaned_data['amont']
-            form.fields['name'].widget.attrs.update(
-                {'class': 'form-control', 'style': 'height: 50px;'})
-            form.fields['currency'].widget.attrs.update(
-                {'class': 'form-control'})
-            form.fields['amont'].widget.attrs.update({'class': 'form-control'})
-            form.save()
+            wallet = form.save(commit=False)
+            wallet.owner = request.user
+            wallet.save()
             return redirect('/')
         return render(request, 'new_wallet.html', {'form': form})
+
     form = WalletForm()
     form.fields['name'].widget.attrs.update(
         {'class': 'form-control', 'style': 'height: 50px;'})
     form.fields['currency'].widget.attrs.update({'class': 'form-control'})
-    form.fields['amont'].widget.attrs.update({'class': 'form-control'})
+    form.fields['amount'].widget.attrs.update({'class': 'form-control'})
+
     return render(request, 'new_wallet.html', {'form': form})
 
 
+@login_required
 def delete_wallet(request, wallet_pk):
     wallet = get_object_or_404(Wallet, pk=wallet_pk, owner=request.user)
+    if request.user != wallet.owner:
+        return HttpResponseForbidden("У вас нет доступа к этому кошельку.")
     if request.method == 'POST':
         wallet.delete()
         return redirect('/')
