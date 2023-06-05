@@ -26,12 +26,28 @@ class WalletForm(forms.ModelForm):
 
 
 class IncomeForm(forms.ModelForm):
+    date = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'],
+        widget=forms.DateTimeInput(attrs={
+            'class': 'form-control datetimepicker-input',
+            'data-target': '#datetimepicker1'
+        })
+    )
+
     class Meta:
         model = IncomeModel
-        fields = ('amount_of_income', 'description', 'cathegory')
+        fields = ('amount_of_income', 'description', 'date', 'cathegory')
 
 
 class ExpenseForm(forms.ModelForm):
+    date = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'],
+        widget=forms.DateTimeInput(attrs={
+            'class': 'form-control datetimepicker-input',
+            'data-target': '#datetimepicker1'
+        })
+    )
+
     class Meta:
         model = ExpenseModel
-        fields = ('amount_of_outcome', 'description', 'cathegory',)
+        fields = ('amount_of_outcome', 'description', 'date', 'cathegory',)

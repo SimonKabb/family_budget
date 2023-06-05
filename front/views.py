@@ -1,10 +1,11 @@
 from itertools import chain
-
+from datetime import datetime
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import QueryDict
 
 from budget.models import CategoryModel, ExpenseModel, IncomeModel, Wallet
 
@@ -94,7 +95,7 @@ def new_wallet(request):
     form.fields['name'].widget.attrs.update(
         {'class': 'form-control', 'style': 'height: 50px;'})
     form.fields['currency'].widget.attrs.update({'class': 'form-control'})
-    form.fields['amount'].widget.attrs.update({'class': 'form-control'})
+    form.fields['amont'].widget.attrs.update({'class': 'form-control'})
 
     return render(request, 'new_wallet.html', {'form': form})
 
@@ -112,21 +113,30 @@ def delete_wallet(request, wallet_pk):
 
 
 # Income
+def update_querydict(querydict, field_name, new_value):
+    mutable_querydict = querydict.copy()
+    mutable_querydict[field_name] = new_value
+    return QueryDict(mutable_querydict.urlencode(), mutable=True)
+
+
 def new_income(request, wallet_pk):
     wallet = Wallet.objects.get(id=wallet_pk)
     categories = CategoryModel.objects.all()
     if request.method == 'POST':
         form = IncomeForm(request.POST)
+        print(form.data['date'])
         if form.is_valid():
             income = form.save(commit=False)
             income.author = request.user
             income.wallet = wallet
+            income.date = request.POST.get('date')
             income.save()
             wallet.amont += income.amount_of_income
             wallet.save()
             return redirect('wallet', pk=wallet.pk)
     else:
         form = IncomeForm(initial={'wallet': wallet})
+
     return render(request, 'new_income.html', {'form': form,
                                                'wallet': wallet,
                                                'categories': categories})
@@ -143,6 +153,7 @@ def new_expense(request, wallet_pk):
             expense = form.save(commit=False)
             expense.author = request.user
             expense.wallet = wallet
+            expense.date = request.POST.get('date')
             expense.save()
             wallet.amont -= expense.amount_of_outcome
             wallet.save()

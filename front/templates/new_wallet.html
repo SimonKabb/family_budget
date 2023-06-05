@@ -1,4 +1,4 @@
-{% extends 'Base.html' %} {% block title %}Новый кошелек{% endblock %} 
+{% extends 'base.html' %} {% block title %}Новый кошелек{% endblock %} 
 {% block content %}
 <form method="post" action="{% url 'new_wallet' %}" class="my-4">
   {% csrf_token %}

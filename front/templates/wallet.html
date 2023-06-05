@@ -1,5 +1,4 @@
-<!-- Wallet.html -->
-{% extends 'Base.html' %} {% block title %}Кошелек{% endblock %} 
+{% extends 'base.html' %} {% block title %}Кошелек{% endblock %} 
 {% block content %}
 <h1>{{ wallet.name}}</h1>
 <div class="row">
@@ -20,9 +19,13 @@
 </ul>
 <div class="row">
   <div class="col">
-    <a href="{% url 'new_income' wallet.pk %}" class="btn btn-primary btn-sm">Пополнить счет</a>
-    <a href="{% url 'new_expense' wallet.pk %}" class="btn btn-danger btn-sm">Потратить</a>
-    <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger btn-sm">Удалить кошелек</a>
+    <div class="btn-group btn-group-sm" role="group">
+      <a href="{% url 'new_income' wallet.pk %}" class="btn btn-primary">Пополнить</a>
+      <a href="{% url 'new_expense' wallet.pk %}" class="btn btn-danger">Потратить</a>
+    </div>
   </div>
+  <div class="col">
+  <a href="{% url 'delete_wallet' wallet.pk %}" class="btn btn-danger btn-sm">Удалить кошелек</a>
+</div>
 </div>
 {% endblock %}

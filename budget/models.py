@@ -51,7 +51,7 @@ class CategoryModel(models.Model):
 class ExpenseModel(models.Model):
     amount_of_outcome = models.PositiveIntegerField()
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     description = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     cathegory = models.ForeignKey(
@@ -66,7 +66,7 @@ class ExpenseModel(models.Model):
 
 class IncomeModel(models.Model):
     amount_of_income = models.PositiveIntegerField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     description = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
